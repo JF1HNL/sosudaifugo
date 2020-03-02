@@ -15,21 +15,27 @@ client.on("ready", ()=> {
 });
 
 client.on("message",message => {
-  if(message_judge(message)){
-    return ;
+  if(message.author.bot){
+    return true
   }
+  // if(message_judge(message)){
+  //   return ;
+  // }
   // let msg = message.content;
   // let guild = message.guild;
-  // let channel = message.channel;
-  let author = message.author.username;
-  message_reply(message, author)
-  if(ROLE_NAME_ID[message.content]){
-    role(message)
+  let channel = message.channel.name;
+  switch (channel) {
+    case 'プレイヤー1':
+      func_player1(message);
+      break;
+    case 'プレイヤー2':
+      func_player2(message);
+      break;
+    case 'bot_control':
+      func_bot_control(message);
+      break;
   }
-  if(message.content === 'reset'){
-    role_reset(message)
-  }
-  message_reply(message, message.content)
+  // message_reply(message, message.content)
   return;
 }
 );
@@ -83,9 +89,6 @@ function role(message) {
 function message_judge(params) { // trueのときはこの先の処理を止める
   const name = params.channel.name
   const ok_channel = ['プレイヤー1', 'プレイヤー2', 'bot_control']
-  if(params.author.bot){
-    return true
-  }
   for(let i in ok_channel){
     if(name === ok_channel[i]){
       return false
@@ -98,20 +101,32 @@ function message_judge(params) { // trueのときはこの先の処理を止め�
 // 素数大富豪で必要な情報とかをここに書く
 
 class PLAYER_CLASS {
-  constructor(name, ary){
-    this.username = name
+  constructor(user_class, ary){
+    this.user = user_class
     this.hand = ary
   }
 }
 
 class SOSUDAIHUGO_CLASS {
-  constructor(player1_name, player1_ary, player2_name, player2_ary){
-    this.player1 = new PLAYER_CLASS(player1_name, player1_ary)
-    this.player2 = new PLAYER_CLASS(player2_name, player2_ary)
+  constructor(player1_user, player1_ary, player2_user, player2_ary){
+    this.player1 = new PLAYER_CLASS(player1_user, player1_ary)
+    this.player2 = new PLAYER_CLASS(player2_user, player2_ary)
   }
 }
 
 let sosudaihugo_obj = new SOSUDAIHUGO_CLASS()
+
+function func_player1(message) {
+  message_reply(message, 'player1') 
+}
+
+function func_player2(message) {
+  message_reply(message, 'player2')
+}
+
+function func_bot_control(message) {
+  message_reply(message, 'bot_control')
+}
 
 const ui_test = 
 `
