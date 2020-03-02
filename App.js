@@ -12,7 +12,6 @@ const ROLE_NAME_ID = {
 client.on("ready", ()=> {
   console.log("ready...");
   client_msg_push('bot_control', 'server-start!')
-  client_msg_push('プレイヤー1', ui_test)
 });
 
 client.on("message",message => {
@@ -22,7 +21,8 @@ client.on("message",message => {
   // let msg = message.content;
   // let guild = message.guild;
   // let channel = message.channel;
-  // let author = message.author.username;
+  let author = message.author.username;
+  message_reply(message, author)
   if(ROLE_NAME_ID[message.content]){
     role(message)
   }
@@ -51,9 +51,8 @@ function client_msg_push(channel_name, text) {
 }
 
 function role_reset(message) {
-  message.reply('役職をリセットしました')
-    .then(message => console.log(`Sent message: 役職をリセットしました`))
-    .catch(console.error);
+  message_reply(message, '役職をリセットしました')
+  sosudaihugo_obj = new SOSUDAIHUGO_CLASS()
   message.guild.members.forEach(member => 
     member.setRoles([ROLE_NAME_ID['kankyaku']])
     .then(console.log(`Swich role: kankyaku`))
@@ -71,6 +70,10 @@ function role(message) {
   // message.member.addRole(ROLE_NAME_ID[msg])
   //   .then(console.log(`swich role: ${msg}`))
   //   .catch(console.error);
+  if(msg === 'player1' || msg === 'player2'){
+    sosudaihugo_obj[msg] = new PLAYER_CLASS(message.author.username, [])
+    console.log(sosudaihugo_obj)
+  }
   message_reply(message, `役職を${msg}に変更しました`)
   message.member.setRoles([ROLE_NAME_ID[msg]])
   .then(console.log(`Swich role: ${msg}`))
@@ -91,6 +94,24 @@ function message_judge(params) { // trueのときはこの先の処理を止め�
   return true
 }
 
+
+// 素数大富豪で必要な情報とかをここに書く
+
+class PLAYER_CLASS {
+  constructor(name, ary){
+    this.username = name
+    this.hand = ary
+  }
+}
+
+class SOSUDAIHUGO_CLASS {
+  constructor(player1_name, player1_ary, player2_name, player2_ary){
+    this.player1 = new PLAYER_CLASS(player1_name, player1_ary)
+    this.player2 = new PLAYER_CLASS(player2_name, player2_ary)
+  }
+}
+
+let sosudaihugo_obj = new SOSUDAIHUGO_CLASS()
 
 const ui_test = 
 `
