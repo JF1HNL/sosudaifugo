@@ -108,11 +108,14 @@ function client_msg_push(channel_name, text) {
 function role_reset(message) {
   client_msg_push('bot_control', '役職をリセットしました')
   sosudaihugo_obj = new SOSUDAIHUGO_CLASS(0, [], 0, [])
-  message.guild.members.forEach(member => 
+  message.guild.members.forEach(member => {
+    if(member.user.bot){ // botは弾く
+      return
+    }
     member.setRoles([ROLE_NAME_ID['kankyaku']])
     .then(console.log(`Swich role: kankyaku`))
     .catch(console.error)
-  )
+  })
 }
 
 function role(message) {
@@ -157,6 +160,7 @@ class SOSUDAIHUGO_CLASS {
   constructor(player1_user, player1_ary, player2_user, player2_ary){
     this.player1 = new PLAYER_CLASS(player1_user, player1_ary)
     this.player2 = new PLAYER_CLASS(player2_user, player2_ary)
+    this.field = 0;
   }
 }
 
